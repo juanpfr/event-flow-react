@@ -44,28 +44,28 @@ enquanto **participantes** podem se inscrever e enviar feedbacks.
 Crie as tabelas no **SQL Editor** do Supabase:
 
 ``` sql
--- Usuários
+-- Tabela de usuários
 create table users (
-  id uuid primary key references auth.users(id) on delete cascade,
+  id uuid primary key default gen_random_uuid(),
   nome text not null,
-  email text not null unique,
+  email text unique not null,
   role text check (role in ('organizer','participant')) not null
 );
 
--- Eventos
+-- Tabela de eventos
 create table events (
-  id uuid default uuid_generate_v4() primary key,
+  id uuid primary key default gen_random_uuid(),
   organizer_id uuid references users(id) on delete cascade,
   nome text not null,
   data date not null,
   local text not null,
   descricao text,
-  capacidade int
+  capacidade int not null
 );
 
 -- Inscrições
 create table registrations (
-  id uuid default uuid_generate_v4() primary key,
+  id uuid primary key default gen_random_uuid(),
   event_id uuid references events(id) on delete cascade,
   participant_id uuid references users(id) on delete cascade,
   unique (event_id, participant_id)
@@ -73,12 +73,13 @@ create table registrations (
 
 -- Feedbacks
 create table feedbacks (
-  id uuid default uuid_generate_v4() primary key,
+  id uuid primary key default gen_random_uuid(),
   event_id uuid references events(id) on delete cascade,
   participant_id uuid references users(id) on delete cascade,
   comentario text not null,
-  unique (event_id, participant_id)
+  unique (event_id, participant_id) -- garante 1 feedback por participante/evento
 );
+
 ```
 
 ------------------------------------------------------------------------
@@ -110,7 +111,7 @@ create table feedbacks (
 ### 1. Clonar o repositório
 
 ``` bash
-git clone https://github.com/kiqrr/senai-sistema-de-gestao.git
+git clone https://github.com/juanpfr/event-flow-react.git
 cd eventflow
 ```
 
