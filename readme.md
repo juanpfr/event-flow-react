@@ -112,7 +112,7 @@ create table feedbacks (
 
 ``` bash
 git clone https://github.com/juanpfr/event-flow-react.git
-cd eventflow
+cd event-flow-react
 ```
 
 ### 2. Instalar dependências
