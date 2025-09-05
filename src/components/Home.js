@@ -15,8 +15,7 @@ export default function Home() {
       .from("events")
       .select(
         "id, nome, data, local, descricao, capacidade, users(nome), feedbacks(comentario, users(nome))"
-      )
-      .limit(3); // ✅ só pega 3 eventos
+      ) // ✅ só pega 3 eventos
 
     if (error) {
       console.error(error);

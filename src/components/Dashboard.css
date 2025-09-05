@@ -323,3 +323,12 @@
 .delete-btn:hover {
   background: #dc2626;
 }
+
+.delete-btn {
+  background-color: #e63946; /* vermelho */
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}

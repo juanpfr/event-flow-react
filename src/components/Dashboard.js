@@ -4,12 +4,14 @@ import Header from "./Header";
 import EventForm from "./EventForm";
 import EditEventForm from "./EditEventForm";
 import RegistrationsTable from "./RegistrationsTable";
+import FeedbacksModal from "./FeedbacksModal"; 
 import "./Dashboard.css";
 
 export default function Dashboard() {
   const [events, setEvents] = useState([]);
   const [editingEvent, setEditingEvent] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showFeedbacksEvent, setShowFeedbacksEvent] = useState(null);
 
   useEffect(() => {
     fetchMyEvents();
@@ -22,6 +24,22 @@ export default function Dashboard() {
       .select("*")
       .eq("organizer_id", user.id);
     if (!error) setEvents(data);
+  }
+
+  async function handleDeleteEvent(eventId) {
+    const confirmDelete = window.confirm("Tem certeza que deseja excluir este evento?");
+    if (!confirmDelete) return;
+
+    const { error } = await supabase
+      .from("events")
+      .delete()
+      .eq("id", eventId);
+
+    if (!error) {
+      setEvents(events.filter((ev) => ev.id !== eventId)); // remove da tela sem precisar recarregar
+    } else {
+      alert("Erro ao excluir evento");
+    }
   }
 
   return (
@@ -48,6 +66,15 @@ export default function Dashboard() {
                 <button onClick={() => setSelectedEvent(ev)} className="event-btn">
                   Ver inscritos
                 </button>
+                <button onClick={() => setShowFeedbacksEvent(ev)} className="event-btn">
+                  Ver feedbacks
+                </button>
+                <button 
+                  onClick={() => handleDeleteEvent(ev.id)} 
+                  className="event-btn delete-btn"
+                >
+                  Excluir evento
+                </button>
               </div>
             </div>
           ))}
@@ -67,6 +94,14 @@ export default function Dashboard() {
           <RegistrationsTable
             event={selectedEvent}
             onClose={() => setSelectedEvent(null)}
+          />
+        )}
+
+        {/* Feedbacks */}
+        {showFeedbacksEvent && (
+          <FeedbacksModal
+            event={showFeedbacksEvent}
+            onClose={() => setShowFeedbacksEvent(null)}
           />
         )}
       </div>
